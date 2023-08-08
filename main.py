@@ -1,110 +1,129 @@
+import textwrap
 import tkinter as tk
 import nltk
 from newspaper import Article
-
-
+from tkinter import *
+import customtkinter
 
 nltk.download('punkt')
 
 # Create a tkinter GUI with CTk
-root = tk.Tk()
+root = customtkinter.CTk()
 root.title("Skip Article")
-root.geometry("1200x800")
+root.geometry("800x660")
 
-# # Define colors
+# Define colors
 bg_color = "#E6F3FF"  # Light blue
 text_color = "#333333"  # Dark gray
 accent_color = "#007BFF"  # Blue
+customtkinter.set_appearance_mode('dark')
+customtkinter.set_default_color_theme('green')
+
+# Title
+title1 = customtkinter.CTkLabel(root, text="Skip Article", height=40, width=40, font=('tuple', 50))
+title1.pack(padx=10, pady=10)
 
 
+# Function to create and style text widgets
+def create_text_widget(root, height, width, placeholder_text):
+    entry = customtkinter.CTkEntry(root, placeholder_text=placeholder_text, height=height, width=width)
+    entry.configure(state="disabled")
+    return entry
 
-# Set background color
-root.config(bg=bg_color)
 
-# Helper function to create and style text widgets
-def create_text_widget(root, height, width):
-    widget = tk.Text(root, height=height, width=width, bg=bg_color, fg=text_color, wrap=tk.WORD)
-    widget.config(state='disabled')
-    return widget
+# Function to create and style CTkTextBox
+def create_text_box(root, height, width):
+    box = customtkinter.CTkTextbox(root, height=height, width=width)
+    box.configure(state="disabled")
+    return box
+
+
 
 # Function to update the text fields with generated data
 def generate_data():
     article_url = link_input.get()
-
     article = Article(article_url)
     article.download()
     article.parse()
     article.nlp()
 
-    title.config(state='normal')
-    title.delete('1.0', tk.END)
-    title.insert(tk.END, article.title)
-    title.config(state='disabled')
 
-    author.config(state='normal')
-    author.delete('1.0', tk.END)
-    author.insert(tk.END, ", ".join(article.authors))
-    author.config(state='disabled')
+# Title
+    title.configure(state='normal')
+    title.delete(1, customtkinter.END)
+    title.insert(customtkinter.END, article.title)
+    title.configure(state='disabled')
 
-    pub_date.config(state='normal')
-    pub_date.delete('1.0', tk.END)
-    pub_date.insert(tk.END, str(article.publish_date))
-    pub_date.config(state='disabled')
+# Author
+    author.configure(state='normal')
+    author.delete(1, customtkinter.END)
+    author.insert(customtkinter.END, ", ".join(article.authors))
+    author.configure(state='disabled')
 
+# Pub Date
+    pub_date.configure(state='normal')
+    pub_date.delete(1, customtkinter.END)
+    pub_date.insert(customtkinter.END, str(article.publish_date))
+    pub_date.configure(state='disabled')
+
+# Summary
     summary.config(state='normal')
     summary.delete('1.0', tk.END)
     summary.insert(tk.END, article.summary)
     summary.config(state='disabled')
 
-    media_news.config(state='normal')
-    media_news.delete('1.0', tk.END)
-    media_news.insert(tk.END, str(article.is_media_news()))
-    media_news.config(state='disabled')
+# Media News
+    media_news.configure(state='normal')
+    media_news.delete(1, customtkinter.END)
+    media_news.insert(customtkinter.END, str(article.is_media_news()))
+    media_news.configure(state='disabled')
+
 
 # Display article title
-tlabel = tk.Label(root, text="Title", bg=bg_color, fg=accent_color, font=("Helvetica", 14, "bold"))
+tlabel = customtkinter.CTkLabel(root, text="Title")
 tlabel.pack()
 
-title = create_text_widget(root, 2, 90)
+title = create_text_widget(root, 30, 600, placeholder_text="Title")
 title.pack()
 
 # Display article author
-alabel = tk.Label(root, text="Author", bg=bg_color, fg=accent_color, font=("Helvetica", 14, "bold"))
+alabel = customtkinter.CTkLabel(root, text="Author", height=30, width=400, )
 alabel.pack()
 
-author = create_text_widget(root, 1, 90)
+author = create_text_widget(root, 30, 600, placeholder_text="Author/s")
 author.pack()
 
 # Display publication date
-dlabel = tk.Label(root, text="Publication Date", bg=bg_color, fg=accent_color, font=("Helvetica", 14, "bold"))
+dlabel = customtkinter.CTkLabel(root, height=30, width=400, text="Publication Date", )
 dlabel.pack()
 
-pub_date = create_text_widget(root, 1, 90)
+pub_date = create_text_widget(root, height=30, width=600, placeholder_text="Publication date")
 pub_date.pack()
 
-# Display article summary
-slabel = tk.Label(root, text="Summary", bg=bg_color, fg=accent_color, font=("Helvetica", 14, "bold"))
+# Display Summary
+slabel = customtkinter.CTkLabel(root, height=30, width=400, text="Summary", )
 slabel.pack()
 
-summary = create_text_widget(root, 15, 90)
+summary = Text(root, height=10, width=68, wrap=WORD, bd=0, bg="#292929", fg="grey", font="tuple")
 summary.pack()
 
 # Display media news
-m_label = tk.Label(root, text="Media News", bg=bg_color, fg=accent_color, font=("Helvetica", 14, "bold"))
+m_label = customtkinter.CTkLabel(root, height=30, width=600, text="Media News", )
 m_label.pack()
 
-media_news = create_text_widget(root, 1, 90)
+media_news = create_text_widget(root, 30, width=600, placeholder_text="Is Media News?")
 media_news.pack()
 
 # Input field for article link
-link_label = tk.Label(root, text="Paste Article Link Here", bg=bg_color, fg=accent_color, font=("Helvetica", 14, "bold"))
+link_label = customtkinter.CTkLabel(root, text="Paste Article Link Here", )
 link_label.pack()
 
-link_input = tk.Entry(root, width=100, bg='white', fg=text_color)
-link_input.pack()
+link_input = customtkinter.CTkEntry(root, height=30, width=400, placeholder_text="Link", )
+link_input.pack(pady=(0, 10))
 
 # Button to generate data
-generate_button = tk.Button(root, text="Summarize", command=generate_data, bg=accent_color, fg='white', font=("Helvetica", 12, "bold"))
+generate_button = customtkinter.CTkButton(root, text="Summarize", command=generate_data)
 generate_button.pack()
 
 root.mainloop()
+
